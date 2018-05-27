@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "name": "provider1"
+  },
+  {
+    "id": "2",
+    "name": "provider2"
+  },
+  {
+    "id": "3",
+    "name": "provider3"
+  },
+  {
+    "id": "4",
+    "name": "provider4"
+  },
+  {
+    "id": "5",
+    "name": "provider5"
+  }
+]
