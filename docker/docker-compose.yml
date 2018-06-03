@@ -30,6 +30,8 @@ services:
       - "/usr/src/app/node_modules"
     logging:
       <<: *logging
+    networks:
+    - testapp_default
   mongodb:
     image: mongo
     container_name: mongodb
@@ -43,3 +45,6 @@ services:
       driver: none
   # redis:
   #   image: redis
+networks:
+  testapp_default:
+    driver: bridge

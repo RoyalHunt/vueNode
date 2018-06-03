@@ -1,16 +1,5 @@
 import Vue from 'vue'
-import {
-  Vuetify,
-  VApp,
-  VNavigationDrawer,
-  VFooter,
-  VList,
-  VBtn,
-  VIcon,
-  VGrid,
-  VToolbar,
-  transitions
-} from 'vuetify'
+import { Vuetify, VApp, VDataTable, VBtn, VIcon, VGrid, VDialog, VCard, VTextField } from 'vuetify'
 import App from './App'
 import router from './router'
 import '../node_modules/vuetify/src/stylus/app.styl'
@@ -18,14 +7,13 @@ import '../node_modules/vuetify/src/stylus/app.styl'
 Vue.use(Vuetify, {
   components: {
     VApp,
-    VNavigationDrawer,
-    VFooter,
-    VList,
+    VDataTable,
+    VDialog,
     VBtn,
     VIcon,
     VGrid,
-    VToolbar,
-    transitions
+    VCard,
+    VTextField
   },
   theme: {
     primary: '#ee44aa',

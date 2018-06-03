@@ -28,12 +28,13 @@
 		font-size: 1.2rem
 		color: #999
 		border-left: .25rem solid #dfe2e5
-		margin-left: 0
+		margin: 1rem 0
 		padding-left: 1rem
 
 	.link
+		font-size: 1.2rem
 		color: #3eaf7c
 		text-decoration: none
 		font-weight: bold
-		
+
 </style>

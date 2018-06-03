@@ -1,24 +1,30 @@
 import mongoose from 'mongoose'
-
-const ProviderSchema = new mongoose.Schema(
-  {
-    id: { type: Number, index: true },
-  },
-  { _id: false },
-)
+import isEmail from 'validator/lib/isEmail'
+import isMobilePhone from 'validator/lib/isMobilePhone'
+import isAlpha from 'validator/lib/isAlpha'
 
 const ClientSchema = new mongoose.Schema(
   {
-    name: { type: String, lowercase: true, index: true },
+    name: {
+      type: String,
+      lowercase: true,
+      index: true,
+      validate: value => isAlpha(value),
+    },
     email: {
       type: String,
       lowercase: true,
       unique: true,
       required: true,
       index: true,
+      validate: value => isEmail(value),
     },
-    phone: { type: Number, index: true },
-    providers: [ProviderSchema],
+    phone: {
+      type: Number,
+      index: true,
+      validate: value => isMobilePhone(value),
+    },
+    providers: [{ type: Number, ref: 'providers' }],
   },
   {
     collection: 'clients',
@@ -31,6 +37,22 @@ ClientSchema.pre('save', async (next) => {
 })
 
 const Client = mongoose.model('Client', ClientSchema)
+
+export async function getAllClients() {
+  try {
+    const clients = await Client.find()
+      .populate('providers')
+      .lean()
+      .exec()
+
+    return clients
+  } catch (e) {
+    console.log('Error', e)
+    return {
+      error: e,
+    }
+  }
+}
 
 export async function saveClient(data) {
   try {
