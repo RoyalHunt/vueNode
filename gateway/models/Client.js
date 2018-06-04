@@ -2,6 +2,20 @@ import mongoose from 'mongoose'
 import isEmail from 'validator/lib/isEmail'
 import isMobilePhone from 'validator/lib/isMobilePhone'
 import isAlpha from 'validator/lib/isAlpha'
+import isAlphanumeric from 'validator/lib/isAlphanumeric'
+
+import Provider from './Provider' //eslint-disable-line
+
+const ProviderSchema = new mongoose.Schema(
+  {
+    id: {
+      type: String,
+      index: true,
+      validate: value => isAlphanumeric(value),
+    },
+  },
+  { _id: false },
+)
 
 const ClientSchema = new mongoose.Schema(
   {
@@ -24,7 +38,7 @@ const ClientSchema = new mongoose.Schema(
       index: true,
       validate: value => isMobilePhone(value),
     },
-    providers: [{ type: Number, ref: 'providers' }],
+    providers: [ProviderSchema],
   },
   {
     collection: 'clients',
@@ -32,20 +46,21 @@ const ClientSchema = new mongoose.Schema(
   },
 )
 
-ClientSchema.pre('save', async (next) => {
-  next()
-})
-
 const Client = mongoose.model('Client', ClientSchema)
 
 export async function getAllClients() {
   try {
     const clients = await Client.find()
-      .populate('providers')
+      .select('-_id')
       .lean()
       .exec()
 
-    return clients
+    const providers = await Provider.find()
+      .select('-_id')
+      .lean()
+      .exec()
+
+    return { clients, providers }
   } catch (e) {
     console.log('Error', e)
     return {

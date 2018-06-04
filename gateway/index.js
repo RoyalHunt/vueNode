@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 
 import createConnection from './connect'
+import clientsRouter from './routers/clientsRouter'
 import config from './config'
 
 const { port } = config
@@ -23,8 +24,20 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
-app.use('/', (req, res) => {
-  res.send('Wow! Works!')
+app.use('/clients', clientsRouter)
+
+app.use((req, res, next) => {
+  const err = new Error('Not Found')
+  err.status = 404
+  next(err)
+})
+
+app.use((err, req, res) => {
+  res.status(err.status || 500)
+  res.json({
+    message: err.message,
+    error: err,
+  })
 })
 
 app.listen(port, () => {

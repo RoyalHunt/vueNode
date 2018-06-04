@@ -17,6 +17,8 @@ services:
       options:
         max-size: "10mb"
         max-file: "1"
+    networks:
+      - testApp
   web:
     container_name: web
     build:
@@ -31,7 +33,7 @@ services:
     logging:
       <<: *logging
     networks:
-    - testapp_default
+      - testApp
   mongodb:
     image: mongo
     container_name: mongodb
@@ -43,8 +45,9 @@ services:
     restart: always
     logging:
       driver: none
-  # redis:
-  #   image: redis
+    networks:
+      - testApp
+      
 networks:
-  testapp_default:
+  testApp:
     driver: bridge

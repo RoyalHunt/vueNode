@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Page404 from '@/components/Page404'
-import Clients from '@/components/Clients'
+import Page404 from '@/pages/Page404'
+import Clients from '@/pages/Clients'
 
 Vue.use(Router)
 

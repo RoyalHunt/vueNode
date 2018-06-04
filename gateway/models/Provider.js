@@ -1,15 +1,15 @@
 import mongoose from 'mongoose'
 import isAlpha from 'validator/lib/isAlpha'
-import isMongoId from 'validator/lib/isMongoId'
+import isAlphanumeric from 'validator/lib/isAlphanumeric'
 
 const ProviderSchema = new mongoose.Schema(
   {
     id: {
-      type: Number,
+      type: String,
       unique: true,
       required: true,
       index: true,
-      validate: value => isMongoId(value),
+      validate: value => isAlphanumeric(value),
     },
     name: {
       type: String,
