@@ -19,16 +19,16 @@ services:
         max-file: "1"
     networks:
       - testApp
-  web:
-    container_name: web
+  frontend:
+    container_name: frontend
     build:
-      context: ../web
+      context: ../frontend
       args:
         - NODE_ENV=${NODE_ENV}
     ports:
       - "3000:3000"
     volumes:
-      - "../web:/usr/src/app"
+      - "../frontend:/usr/src/app"
       - "/usr/src/app/node_modules"
     logging:
       <<: *logging
@@ -47,7 +47,7 @@ services:
       driver: none
     networks:
       - testApp
-      
+
 networks:
   testApp:
     driver: bridge

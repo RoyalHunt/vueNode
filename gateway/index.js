@@ -7,6 +7,7 @@ import morgan from 'morgan'
 
 import createConnection from './connect'
 import clientsRouter from './routers/clientsRouter'
+import providersRouter from './routers/providersRouter'
 import config from './config'
 
 const { port } = config
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
 app.use('/clients', clientsRouter)
+app.use('/providers', providersRouter)
 
 app.use((req, res, next) => {
   const err = new Error('Not Found')

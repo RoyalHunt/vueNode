@@ -10,7 +10,8 @@ import {
   VCard,
   VTextField,
   VForm,
-  VToolbar
+  VToolbar,
+  VCheckbox
 } from 'vuetify'
 import App from './App'
 import router from './router'
@@ -27,7 +28,8 @@ Vue.use(Vuetify, {
     VCard,
     VTextField,
     VForm,
-    VToolbar
+    VToolbar,
+    VCheckbox
   },
   theme: {
     primary: '#2196F3',
