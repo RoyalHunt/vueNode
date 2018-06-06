@@ -3,7 +3,7 @@
   <v-dialog v-model="newModal" max-width="700"  transition="dialog-bottom-transition" persistent >
     <v-card>
       <v-card-title>
-        <span class="headline">New Client</span>
+        <span class="headline">User Profile</span>
       </v-card-title>
 
       <div class="wrapper">
@@ -67,6 +67,9 @@
           </div>
 
           <v-layout row >
+            <v-btn class="my-3" color="error" @click.native="$emit('handleModal', false)">
+              delete
+            </v-btn>
             <v-spacer/>
             <v-btn class="my-3" @click.native="$emit('handleModal', false)">
               cancel
@@ -93,7 +96,7 @@ import { required, minLength, email, alpha } from 'vuelidate/lib/validators'
 import sortBy from 'lodash/sortBy'
 import capitalize from 'lodash/capitalize'
 
-import { addProvider, deleteProvider, addClient } from '@/api'
+import { getProviders, addProvider, deleteProvider, addClient } from '@/api'
 
 const isPhone = value => /^\d{10}$/.test(value)
 

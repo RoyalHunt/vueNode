@@ -9,7 +9,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="clients"
+      :items="normalizedClients"
       hide-actions
       class="elevation-1">
       <template slot="items"
@@ -33,6 +33,7 @@
     @update="updateFromChild"
     @addNewProvider="addNewProvider"
     @deleteProvider="deleteProvider"
+    @addNewClient="addNewClient"
   />
 </div>
 </template>
@@ -80,17 +81,26 @@ export default {
   async mounted() {
     const data = await getClients()
     this.providers = data.providers
-    const providersObj = data.providers.reduce((obj, item) => {
-      obj[item.id] = item //eslint-disable-line
-      return obj
-    }, {})
+    this.clients = data.clients
+  },
+  computed: {
+    normalizedClients() {
+      const providersObj = this.providers.reduce((obj, item) => {
+        obj[item.id] = item //eslint-disable-line
+        return obj
+      }, {})
 
-    this.clients = data.clients.map(client => ({
-      ...client,
-      providers: client.providers.map(provider => providersObj[provider.id])
-    }))
+      const clients = this.clients.map(client => ({
+        ...client,
+        providers: client.providers.map(provider => providersObj[provider.id])
+      }))
+      return clients
+    }
   },
   methods: {
+    addNewClient(client) {
+      this.clients.push(client)
+    },
     addNewProvider(provider) {
       this.providers.push(provider)
     },

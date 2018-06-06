@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import isEmail from 'validator/lib/isEmail'
 import isInt from 'validator/lib/isInt'
 import isAlpha from 'validator/lib/isAlpha'
-import isAlphanumeric from 'validator/lib/isAlphanumeric'
 
 import Provider from './Provider'
 
@@ -11,7 +10,6 @@ const ProviderSchema = new mongoose.Schema(
     id: {
       type: String,
       index: true,
-      validate: value => isAlphanumeric(value),
     },
   },
   { _id: false },
