@@ -26,7 +26,14 @@
 			</template>
     </v-data-table>
   </v-card>
-  <NewClientModal v-bind:newModal="newModal" v-on:handleModal="newModal = $event"/>
+  <NewClientModal
+    v-bind:newModal="newModal"
+    v-bind:providers="providers"
+    @handleModal="newModal = $event"
+    @update="updateFromChild"
+    @addNewProvider="addNewProvider"
+    @deleteProvider="deleteProvider"
+  />
 </div>
 </template>
 
@@ -41,6 +48,7 @@ export default {
   data: () => ({
     newModal: false,
     clients: [],
+    providers: [],
     headers: [
       {
         text: 'Name',
@@ -71,19 +79,29 @@ export default {
   }),
   async mounted() {
     const data = await getClients()
-    const providersMap = data.providers.reduce((obj, item) => {
+    this.providers = data.providers
+    const providersObj = data.providers.reduce((obj, item) => {
       obj[item.id] = item //eslint-disable-line
       return obj
     }, {})
 
     this.clients = data.clients.map(client => ({
       ...client,
-      providers: client.providers.map(provider => providersMap[provider.id])
+      providers: client.providers.map(provider => providersObj[provider.id])
     }))
   },
   methods: {
+    addNewProvider(provider) {
+      this.providers.push(provider)
+    },
+    deleteProvider(providerId) {
+      this.providers = this.providers.filter(provider => provider.id !== providerId)
+    },
     phoneNormalized(phone) {
       return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+    },
+    updateFromChild(client) {
+      this.clients.push(client)
     }
   }
 }

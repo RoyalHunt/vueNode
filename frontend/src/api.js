@@ -9,6 +9,11 @@ export async function getClients() {
   return clients.data
 }
 
+export async function addClient(client) {
+  const newClient = await axios.post(`${HOST}/clients/add`, client)
+  return newClient
+}
+
 export async function getProviders() {
   const providers = await axios.get(`${HOST}/providers`)
   return providers.data

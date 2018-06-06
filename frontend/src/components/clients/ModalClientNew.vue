@@ -52,7 +52,7 @@
               <v-flex xs5 >
                 <v-checkbox
                   hide-details
-                  v-model="selected"
+                  v-model="selectedProviders"
                   :label="normalizedLabel(provider.name)" :value="provider.id"/>
               </v-flex>
               <v-flex xs3 >
@@ -75,7 +75,7 @@
               cancel
             </v-btn>
             <v-btn class="my-3" @click.prevent="submit"
-              :disabled="!this.$v.$invalid"
+              :disabled="this.$v.$invalid"
               color="info">
               add client
             </v-btn>
@@ -96,7 +96,7 @@ import { required, minLength, email, alpha } from 'vuelidate/lib/validators'
 import sortBy from 'lodash/sortBy'
 import capitalize from 'lodash/capitalize'
 
-import { getProviders, addProvider, deleteProvider } from '@/api'
+import { getProviders, addProvider, deleteProvider, addClient } from '@/api'
 
 const isPhone = value => /^\d{10}$/.test(value)
 
@@ -105,6 +105,11 @@ export default {
     newModal: {
       type: Boolean,
       default: false,
+      required: true
+    },
+    providers: {
+      type: Array,
+      default: [],
       required: true
     }
   },
@@ -122,13 +127,9 @@ export default {
     name: '',
     email: '',
     phone: '',
-    providers: [],
     newProvider: '',
-    selected: []
+    selectedProviders: []
   }),
-  async mounted() {
-    this.providers = await getProviders()
-  },
   computed: {
     sortedProviders() {
       return sortBy(this.providers, ['name'])
@@ -156,19 +157,31 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
       this.$v.$touch()
+      const providers = this.selectedProviders.map(id => ({ id }))
+      const client = {
+        name: this.name,
+        email: this.email,
+        phone: this.phone,
+        providers
+      }
+      const newClient = await addClient(client)
+      if (newClient.status === 200) {
+        // const clientProviders = newClient.data.providers.map(provider => provider.id ===)
+        this.$emit('update', newClient.data)
+      }
       this.$emit('handleModal', false)
     },
     async addNewProvider() {
       const name = this.newProvider.toLowerCase()
       const newProvider = await addProvider(name)
-      this.providers.push(newProvider)
+      this.$emit('addNewProvider', newProvider)
     },
     async delProvider(id) {
       const test = await deleteProvider(id)
       if (test.status === 200) {
-        this.providers = this.providers.filter(provider => provider.id !== id)
+        this.$emit('deleteProvider', id)
       }
     },
     normalizedLabel(string) {

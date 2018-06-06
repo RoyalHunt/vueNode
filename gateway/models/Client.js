@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
 import isEmail from 'validator/lib/isEmail'
-import isMobilePhone from 'validator/lib/isMobilePhone'
+import isInt from 'validator/lib/isInt'
 import isAlpha from 'validator/lib/isAlpha'
 import isAlphanumeric from 'validator/lib/isAlphanumeric'
 
-import Provider from './Provider' //eslint-disable-line
+import Provider from './Provider'
 
 const ProviderSchema = new mongoose.Schema(
   {
@@ -34,9 +34,9 @@ const ClientSchema = new mongoose.Schema(
       validate: value => isEmail(value),
     },
     phone: {
-      type: Number,
+      type: String,
       index: true,
-      validate: value => isMobilePhone(value),
+      validate: value => isInt(value),
     },
     providers: [ProviderSchema],
   },
@@ -69,10 +69,10 @@ export async function getAllClients() {
   }
 }
 
-export async function saveClient(data) {
+export async function saveNewClient(data) {
   try {
-    const userExists = await Client.findOne({ email: data.email })
-    if (userExists) {
+    const clientExists = await Client.findOne({ email: data.email })
+    if (clientExists) {
       return {
         error: 'Client already exists',
       }
