@@ -47,6 +47,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'semi': ['error', 'never'],
     'comma-dangle': [0],
-    'no-unused-expressions': [0]
+    'no-unused-expressions': [0],
+    "no-underscore-dangle": [0],
   }
 }

@@ -7,7 +7,7 @@
       </v-card-title>
 
       <div class="wrapper">
-        <v-form v-model="valid">
+        <v-form>
 
           <v-text-field label="Name"
             v-model="name"
@@ -38,11 +38,18 @@
 
           <v-layout row wrap>
             <v-flex xs12 sm6>
-              <v-text-field label="Providers"
-                v-model="newProvider"></v-text-field>
+              <v-text-field
+                label="Providers"
+                v-model="newProvider"
+                :error-messages="newProviderErrors"
+                @input="$v.newProvider.$touch()"
+                @blur="$v.newProvider.$touch()"
+                ></v-text-field>
             </v-flex>
             <v-flex xs12 offset-sm1 sm5>
-              <v-btn block  @click.prevent="addNewProvider">add provider</v-btn>
+              <v-btn block
+              :disabled="this.$v.newProvider.$invalid || !this.$v.newProvider.$dirty"
+              @click.prevent="addNewProvider">add provider</v-btn>
             </v-flex>
           </v-layout>
 
@@ -89,7 +96,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, email, alpha } from 'vuelidate/lib/validators'
+import { required, minLength, email, alphaNum } from 'vuelidate/lib/validators'
 import sortBy from 'lodash/sortBy'
 import capitalize from 'lodash/capitalize'
 
@@ -114,13 +121,13 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, alpha, minLength: minLength(4) },
+    name: { required, alphaNum, minLength: minLength(4) },
     email: { required, email },
-    phone: { required, isPhone }
+    phone: { required, isPhone },
+    newProvider: { alphaNum, minLength: minLength(4) }
   },
 
   data: () => ({
-    valid: false,
     name: '',
     email: '',
     phone: '',
@@ -150,6 +157,12 @@ export default {
       if (!this.$v.phone.$dirty) return errors
       !this.$v.phone.required && errors.push('Phone is required')
       !this.$v.phone.isPhone && errors.push('Phone must be 10 digits long')
+      return errors
+    },
+    newProviderErrors() {
+      const errors = []
+      if (!this.$v.newProvider.$dirty) return errors
+      !this.$v.newProvider.minLength && errors.push('Provider must be at least 4 characters long')
       return errors
     }
   },

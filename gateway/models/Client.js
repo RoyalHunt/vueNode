@@ -3,7 +3,9 @@ import isEmail from 'validator/lib/isEmail'
 import isInt from 'validator/lib/isInt'
 import isAlpha from 'validator/lib/isAlpha'
 
-import Provider from './Provider'
+import { getAllProviders } from './Provider'
+
+const { ObjectId } = mongoose.Types
 
 const ProviderSchema = new mongoose.Schema(
   {
@@ -49,14 +51,10 @@ const Client = mongoose.model('Client', ClientSchema)
 export async function getAllClients() {
   try {
     const clients = await Client.find()
-      .select('-_id')
       .lean()
       .exec()
 
-    const providers = await Provider.find()
-      .select('-_id')
-      .lean()
-      .exec()
+    const providers = await getAllProviders()
 
     return { clients, providers }
   } catch (e) {
@@ -86,20 +84,36 @@ export async function saveNewClient(data) {
   }
 }
 
-export async function updateClient(data) {
-  const client = await Client.findOneAndUpdate(
-    { email: data.email },
-    {
-      name: data.name,
-    },
-    { new: true },
-  )
-  if (!client) {
+export async function editClient(data) {
+  try {
+    const { id, ...client } = data
+    const editedclient = await Client.findByIdAndUpdate(id, client, { new: true })
+    if (!editedclient) {
+      return {
+        error: 'Client does not exists',
+      }
+    }
+    return editedclient
+  } catch (e) {
+    console.log('Error', e)
     return {
-      error: 'Client does not exists',
+      error: e,
     }
   }
-  return client
+}
+
+export async function deleteClient(id) {
+  try {
+    const objId = ObjectId(id)
+    const client = await Client.findByIdAndRemove(objId)
+
+    return client
+  } catch (e) {
+    console.log('Error', e)
+    return {
+      error: e,
+    }
+  }
 }
 
 export default Client

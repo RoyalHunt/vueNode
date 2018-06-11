@@ -14,40 +14,55 @@
       class="elevation-1">
       <template slot="items"
         slot-scope="props">
-					<td class="text-xs-left">{{ props.item.name }}</td>
+					<td class="text-xs-left name">{{ props.item.name }}</td>
 					<td class="text-xs-left">{{ props.item.email }}</td>
 					<td class="text-xs-left">{{ phoneNormalized(props.item.phone) }}</td>
 					<td class="text-xs-left">
             <span v-for="provider in props.item.providers" class="provider">{{provider.name}} </span>
           </td>
 					<td class="text-xs-left">
-            <button type="button" name="edit" class="edit">edit</button>
+            <button type="button" name="edit" class="edit" @click="getRowDataToModal(props.item)">edit</button>
           </td>
 			</template>
     </v-data-table>
   </v-card>
-  <NewClientModal
-    v-bind:newModal="newModal"
-    v-bind:providers="providers"
+  <ModalClientNew
+    v-if="newModal"
+    :newModal="newModal"
+    :providers="providers"
     @handleModal="newModal = $event"
-    @update="updateFromChild"
     @addNewProvider="addNewProvider"
     @deleteProvider="deleteProvider"
     @addNewClient="addNewClient"
+  />
+  <ModalClientEdit
+    v-if="editModal"
+    :editModal="editModal"
+    :providers="providers"
+    :clientInfo="clientInfo"
+    @handleModal="editModal = $event"
+    @addNewProvider="addNewProvider"
+    @deleteProvider="deleteProvider"
+    @deleteClient="deleteClient"
+    @editClient="editClient"
   />
 </div>
 </template>
 
 <script>
 import { getClients } from '@/api'
-import NewClientModal from '@/components/clients/ModalClientNew'
+import ModalClientNew from '@/components/clients/ModalClientNew'
+import ModalClientEdit from '@/components/clients/ModalClientEdit'
 
 export default {
   components: {
-    NewClientModal
+    ModalClientNew,
+    ModalClientEdit
   },
   data: () => ({
     newModal: false,
+    editModal: false,
+    clientInfo: {},
     clients: [],
     providers: [],
     headers: [
@@ -98,8 +113,18 @@ export default {
     }
   },
   methods: {
+    getRowDataToModal(client) {
+      this.clientInfo = client
+      this.editModal = true
+    },
     addNewClient(client) {
       this.clients.push(client)
+    },
+    editClient(client) {
+      this.clients = this.clients.map(item => (item._id === client._id ? client : item))
+    },
+    deleteClient(id) {
+      this.clients = this.clients.filter(item => item._id !== id)
     },
     addNewProvider(provider) {
       this.providers.push(provider)
@@ -109,9 +134,6 @@ export default {
     },
     phoneNormalized(phone) {
       return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
-    },
-    updateFromChild(client) {
-      this.clients.push(client)
     }
   }
 }
@@ -133,4 +155,7 @@ h1
   text-transform: capitalize
   text-decoration: underline
   color: #3BA2F5
+
+.name
+  text-transform: capitalize
 </style>

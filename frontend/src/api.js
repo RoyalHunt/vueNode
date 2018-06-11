@@ -28,17 +28,16 @@ export async function deleteProvider(id) {
   return provider
 }
 
-export async function getRelatedKids({ familyId, communityId }) {
-  const kids = await axios.get(`${HOST}/admin/parent/kids`, {
+export async function deleteClient(id) {
+  const client = await axios.delete(`${HOST}/clients`, {
     params: {
-      familyId,
-      communityId
+      id
     }
   })
-  return kids.data
+  return client
 }
 
-export async function editParent(editedParent) {
-  const parent = await axios.put(`${HOST}/admin/parents`, editedParent)
-  return parent
+export async function editClient(client) {
+  const editedClient = await axios.put(`${HOST}/clients`, client)
+  return editedClient
 }

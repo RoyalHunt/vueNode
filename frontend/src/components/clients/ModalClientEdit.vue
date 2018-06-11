@@ -1,13 +1,13 @@
 <template>
   <v-layout row justify-center>
-  <v-dialog v-model="newModal" max-width="700"  transition="dialog-bottom-transition" persistent >
+  <v-dialog v-model="editModal" max-width="700"  transition="dialog-bottom-transition" persistent >
     <v-card>
       <v-card-title>
         <span class="headline">User Profile</span>
       </v-card-title>
 
       <div class="wrapper">
-        <v-form v-model="valid">
+        <v-form>
 
           <v-text-field label="Name"
             v-model="name"
@@ -36,15 +36,22 @@
             @blur="$v.phone.$touch()"
             ></v-text-field>
 
-          <v-layout row wrap>
-            <v-flex xs12 sm6>
-              <v-text-field label="Providers"
-                v-model="newProvider"></v-text-field>
-            </v-flex>
-            <v-flex xs12 offset-sm1 sm5>
-              <v-btn block  @click.prevent="addNewProvider">add provider</v-btn>
-            </v-flex>
-          </v-layout>
+            <v-layout row wrap>
+              <v-flex xs12 sm6>
+                <v-text-field
+                  label="Providers"
+                  v-model="newProvider"
+                  :error-messages="newProviderErrors"
+                  @input="$v.newProvider.$touch()"
+                  @blur="$v.newProvider.$touch()"
+                  ></v-text-field>
+              </v-flex>
+              <v-flex xs12 offset-sm1 sm5>
+                <v-btn block
+                :disabled="this.$v.newProvider.$invalid || !this.$v.newProvider.$dirty"
+                @click.prevent="addNewProvider">add provider</v-btn>
+              </v-flex>
+            </v-layout>
 
 
           <div class="providers" v-for="provider in sortedProviders" :key="provider.name">
@@ -67,7 +74,7 @@
           </div>
 
           <v-layout row >
-            <v-btn class="my-3" color="error" @click.native="$emit('handleModal', false)">
+            <v-btn class="my-3" color="error" @click.native="delClient(clientInfo._id)">
               delete
             </v-btn>
             <v-spacer/>
@@ -77,7 +84,7 @@
             <v-btn class="my-3" @click.prevent="submit"
               :disabled="this.$v.$invalid"
               color="info">
-              add client
+              save client
             </v-btn>
           </v-layout>
 
@@ -92,17 +99,17 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, email, alpha } from 'vuelidate/lib/validators'
+import { required, minLength, email, alphaNum } from 'vuelidate/lib/validators'
 import sortBy from 'lodash/sortBy'
 import capitalize from 'lodash/capitalize'
 
-import { getProviders, addProvider, deleteProvider, addClient } from '@/api'
+import { addProvider, deleteProvider, editClient, deleteClient } from '@/api'
 
 const isPhone = value => /^\d{10}$/.test(value)
 
 export default {
   props: {
-    newModal: {
+    editModal: {
       type: Boolean,
       default: false,
       required: true
@@ -111,25 +118,30 @@ export default {
       type: Array,
       default: [],
       required: true
+    },
+    clientInfo: {
+      type: Object
     }
   },
 
   mixins: [validationMixin],
 
   validations: {
-    name: { required, alpha, minLength: minLength(4) },
+    name: { required, alphaNum, minLength: minLength(4) },
     email: { required, email },
-    phone: { required, isPhone }
+    phone: { required, isPhone },
+    newProvider: { alphaNum, minLength: minLength(4) }
   },
 
-  data: () => ({
-    valid: false,
-    name: '',
-    email: '',
-    phone: '',
-    newProvider: '',
-    selectedProviders: []
-  }),
+  data() {
+    return {
+      name: this.clientInfo.name,
+      email: this.clientInfo.email,
+      phone: this.clientInfo.phone,
+      newProvider: '',
+      selectedProviders: this.clientInfo.providers.map(item => item.id)
+    }
+  },
   computed: {
     sortedProviders() {
       return sortBy(this.providers, ['name'])
@@ -154,6 +166,12 @@ export default {
       !this.$v.phone.required && errors.push('Phone is required')
       !this.$v.phone.isPhone && errors.push('Phone must be 10 digits long')
       return errors
+    },
+    newProviderErrors() {
+      const errors = []
+      if (!this.$v.newProvider.$dirty) return errors
+      !this.$v.newProvider.minLength && errors.push('Provider must be at least 4 characters long')
+      return errors
     }
   },
   methods: {
@@ -161,13 +179,15 @@ export default {
       this.$v.$touch()
       const providers = this.selectedProviders.map(id => ({ id }))
       const client = {
+        id: this.clientInfo._id,
         name: this.name,
         email: this.email,
         phone: this.phone,
         providers
       }
-      const newClient = await addClient(client)
-      this.$emit('addNewClient', newClient.data)
+      const editedClient = await editClient(client)
+
+      this.$emit('editClient', editedClient.data)
       this.$emit('handleModal', false)
     },
     async addNewProvider() {
@@ -180,6 +200,11 @@ export default {
       if (test.status === 200) {
         this.$emit('deleteProvider', id)
       }
+    },
+    async delClient(id) {
+      const test = await deleteClient(id)
+      this.$emit('deleteClient', test.data._id)
+      this.$emit('handleModal', false)
     },
     normalizedLabel(string) {
       return capitalize(string)
