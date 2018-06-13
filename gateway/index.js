@@ -4,16 +4,34 @@ import cors from 'cors'
 import compression from 'compression'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import swaggerJSDoc from 'swagger-jsdoc'
 
 import createConnection from './connect'
-import clientsRouter from './routers/clientsRouter'
-import providersRouter from './routers/providersRouter'
+import clientsRouter from './routes/clientsRouter'
+import providersRouter from './routes/providersRouter'
 import config from './config'
 
 const { port } = config
 const dev = process.env.NODE_ENV !== 'production'
 
 createConnection()
+
+const swaggerDefinition = {
+  info: {
+    title: 'Node Swagger API',
+    version: '1.0.0',
+    description: 'Practical test application',
+  },
+  host: 'localhost:8080',
+  basePath: '/',
+}
+
+const options = {
+  swaggerDefinition,
+  apis: ['./routes/*.js'],
+}
+
+const swaggerSpec = swaggerJSDoc(options)
 
 const app = express()
 app.use(helmet())
@@ -27,6 +45,11 @@ app.use(morgan('dev'))
 
 app.use('/clients', clientsRouter)
 app.use('/providers', providersRouter)
+
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json')
+  res.send(swaggerSpec)
+})
 
 app.use((req, res, next) => {
   const err = new Error('Not Found')

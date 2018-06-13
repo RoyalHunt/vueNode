@@ -29,7 +29,7 @@ export async function deleteProvider(id) {
 }
 
 export async function deleteClient(id) {
-  const client = await axios.delete(`${HOST}/clients`, {
+  const client = await axios.delete(`${HOST}/clients/delete`, {
     params: {
       id
     }
@@ -38,6 +38,6 @@ export async function deleteClient(id) {
 }
 
 export async function editClient(client) {
-  const editedClient = await axios.put(`${HOST}/clients`, client)
+  const editedClient = await axios.put(`${HOST}/clients/edit`, client)
   return editedClient
 }

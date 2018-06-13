@@ -1,97 +1,59 @@
-# Nodejs Express Joi starter with Swagger
-
-docker exec -it mongodb bash
-You can seed your database with data running script file with next command:
-sh data/seed/bootstrap.sh
-
-**Demo**: https://node-express-joi-starter.herokuapp.com/
-
-A boilerplate for nodejs api based on express with Joi validator and swagger
-
-There are a lot of boilerplates node api can be found today. But I wasn't be able to find boilerplate on express
-with validation and documentation at once. I prepared all in one starter. I hope this will help someone.
+# NodeJs Express with Swagger + VueJs
 
 ## Overview
 
-This is a boilerplate of REST API on [`Nodejs`](https://nodejs.org/en/) based on [`Express`](http://expressjs.com/)
-with [`Joi validator`](https://github.com/hapijs/joi/blob/v10.6.0/API.md) and [Swagger documentation](https://swagger.io/specification/).
-Code based on ES6, async/await and as a consequence requires Node version >= 7.6.
-For example was implemented CRUD for User model and authentication using [JWT token](https://jwt.io/). Also user session with JWT token stored in db.
-The root of api is swagger ui based on [swagger.json](https://github.com/igormigunov/node-express-joi-starter/blob/master/public/swagger/swagger.json).
-It can be made using `npm run yaml2json`. Package [yaml2json](https://www.npmjs.com/package/yaml2json) should be installed globally `npm install -g yaml2json`.
+This is REST API project on [`Nodejs`](https://nodejs.org/en/) based on [`Express`](http://expressjs.com/) and [Swagger documentation](https://swagger.io/specification/).
+
+Frontend part based on [VueJs](https://vuejs.org/v2/guide/)
 
 ## Getting Started
 
 ```bash
 # Clone the repository
-git clone https://github.com/igormigunov/node-express-joi-starter.git
+git clone https://github.com/RoyalHunt/vueNode.git
 
 # Change directory
-cd node-express-joi-starter
+cd vueNode/docker
 
-# Install dependencies
-yarn install
-
-# Start it in simple mode
-npm start
-
-# Start in dev mode using nodemoon
-npm run dev
+# Build containers and run application
+sh ./bootstrap.sh
 ```
 
 ## Project Structure
 
-* folders
-* [controllers](https://github.com/igormigunov/node-express-joi-starter/tree/master/controllers) - Routes modules
-* [models](https://github.com/igormigunov/node-express-joi-starter/tree/master/models) - Mongoose models
-* [module](https://github.com/igormigunov/node-express-joi-starter/tree/master/modules) - Helper modules for reuse in other project modules
-* [public](https://github.com/igormigunov/node-express-joi-starter/tree/master/public) - Static content
-* [tests](https://github.com/igormigunov/node-express-joi-starter/tree/master/tests) - Tests
-* files
-* [index.js](https://github.com/igormigunov/node-express-joi-starter/blob/master/index.js) - Application Entrypoint
-* [app.js](https://github.com/igormigunov/node-express-joi-starter/blob/master/app.js) - Main application file
-* [.env](https://github.com/igormigunov/node-express-joi-starter/blob/master/.env) - Environment Variables
-* [.env.test](https://github.com/igormigunov/node-express-joi-starter/blob/master/.env.test) - Environment Variables for tests
-* Structure based on [hackathon-starter](https://github.com/sahat/hackathon-starter)
+- folders
+- [data](https://github.com/RoyalHunt/) - Seeds for MongoDb
+- [docker](https://github.com/RoyalHunt/) - env file + docker configation
+- [frontend](https://github.com/RoyalHunt/) - Web SPa on VueJs
+- [gateway](https://github.com/RoyalHunt/) - Backend NodeJs Express
 
-## Models
+## MongoDb
 
-Mongoose models contains Joi validators and some plugins. Plugins:
+You can seed database with data running script file from `docker folder` with next command:
 
-* [mongoose-delete](https://github.com/dsanel/mongoose-delete/)
-* [mongoose-timestamp](https://github.com/drudge/mongoose-timestamp)
+```bash
+# Run bash in mongodb container
+docker exec -it mongodb bash
 
-## Joi
-
-For mongoose models should be used `validate` object with keys
-`params`, `body` or `query` for validity appropriate request parts.
-For each controllers should be defined `validate` method which should be used
-with [celebrate](https://github.com/continuationlabs/celebrate) middleware in `app.js`.
+# Run script file
+sh data/seed/bootstrap.sh
+```
 
 ## Swagger
 
-At first should be corrected [swagger.yaml](https://github.com/igormigunov/node-express-joi-starter/blob/master/public/swagger/swagger.yaml) file according to needed models.
-After should do `npm run yaml2json` and `swagger.json` is ready
+Swagger documentation you could find by the next link:
+[`http://localhost:8081/`](http://localhost:8081/)
+
+To generate the Swagger specification, we are using [`swagger-jsdoc`](https://github.com/Surnet/swagger-jsdoc)
 
 ## Environment Variables
 
-* MONGODB_URI - mongodb connection string
-* JWT_SECRET - Your JWT secret
-* SESSION_EXP - Session and JWT token lifetime in second
-
-## Tests
-
-CRUD operations for user implemented in [test](https://github.com/igormigunov/node-express-joi-starter/blob/master/tests/user.crud.test.js). It contains `before` method that
-clear database before tests start. Just `npm run test` to start it.
-Test use [.env.test](https://github.com/igormigunov/node-express-joi-starter/blob/master/.env.test) environment variables file.
+- NODE_ENV - specifies the environment in which an application is running (default is development)
 
 ## Requirements
 
-* [Nodejs](https://nodejs.org/en/) >= 7.6
-* [Mongodb](https://www.mongodb.com/)
-
-## Docker
-
-```bash
-docker-compose up
-```
+- [Nodejs](https://nodejs.org/en/) >= 7.6
+- [Swagger](https://swagger.io/)
+- [Mongodb](https://www.mongodb.com/)
+- [Docker](https://docs.docker.com/)
+- [VueJs](https://vuejs.org/v2/guide/)

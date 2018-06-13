@@ -23,6 +23,7 @@ const ClientSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
       index: true,
+      required: true,
       validate: value => isAlpha(value),
     },
     email: {
