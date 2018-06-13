@@ -21,7 +21,7 @@ sh ./bootstrap.sh
 
 ## Project Structure
 
-- folders
+Folders
 - [data](https://github.com/RoyalHunt/) - Seeds for MongoDb
 - [docker](https://github.com/RoyalHunt/) - env file + docker configation
 - [frontend](https://github.com/RoyalHunt/) - Web SPa on VueJs
@@ -52,7 +52,7 @@ To generate the Swagger specification, we are using [`swagger-jsdoc`](https://gi
 
 ## Requirements
 
-- [Nodejs](https://nodejs.org/en/) >= 7.6
+- [Nodejs](https://nodejs.org/en/)
 - [Swagger](https://swagger.io/)
 - [Mongodb](https://www.mongodb.com/)
 - [Docker](https://docs.docker.com/)
