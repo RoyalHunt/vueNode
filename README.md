@@ -19,6 +19,34 @@ cd vueNode/docker
 sh ./bootstrap.sh
 ```
 
+Without docker, you should do next steps.
+
+**For develop version:**
+
+```bash
+# Enter in to backend folder from root
+cd gateway
+
+# Install dependencies
+npm install
+
+# Run server
+npm run dev
+```
+
+_In another terminal window:_
+
+```bash
+# Enter in to frontend folder from root
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run server
+npm start
+```
+
 ## Project Structure
 
 - folders
@@ -36,6 +64,16 @@ You can seed database with data running script file from `docker folder` with ne
 docker exec -it mongodb bash
 
 # Run script file
+sh data/seed/bootstrap.sh
+```
+
+Without docker, you should do next steps:
+
+```bash
+# Run mongodb
+mongod
+
+# Run script file from docker folder
 sh data/seed/bootstrap.sh
 ```
 
