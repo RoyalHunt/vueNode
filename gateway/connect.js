@@ -3,13 +3,13 @@ import chalk from 'chalk'
 
 import config from './config'
 
-const { mongoDBUrl } = config
+const { mongoDbUrl } = config
 
 mongoose.Promise = Promise
 
 const createConnection = async () => {
   try {
-    await mongoose.connect(mongoDBUrl)
+    await mongoose.connect(mongoDbUrl)
     console.log(chalk.cyan('Mongoose connected to DB'))
     mongoose.set('debug', false)
   } catch (err) {

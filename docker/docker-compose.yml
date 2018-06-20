@@ -12,6 +12,8 @@ services:
       - "../gateway:/usr/src/app"
     depends_on:
       - mongodb
+    environment:
+      DB_URL: ${DB_URL}
     logging: &logging
       driver: "json-file"
       options:
@@ -30,6 +32,8 @@ services:
     volumes:
       - "../frontend:/usr/src/app"
       - "/usr/src/app/node_modules"
+    environment:
+      NODE_ENV: ${NODE_ENV}
     logging:
       <<: *logging
     networks:
@@ -51,7 +55,7 @@ services:
     container_name: swagger-ui
     image:   "swaggerapi/swagger-ui"
     environment:
-    - API_URL=http://localhost:8080/swagger.json
+      API_URL: 'http://localhost:8080/swagger.json'
     ports:
       - "8081:8080"
     restart: always
